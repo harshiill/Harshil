@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Confession</title>
+    <style>
+      #container {
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+      }
+      form {
+        border: 2px solid black;
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        background-color: red;
+        color: white;
+        font-family: "Times New Roman", Times, serif;
+        padding: 10px;
+      }
+      body {
+        background-color: aqua;
+      }
+      form div {
+        margin-top: 5px;
+        margin-bottom: 5px;
+        background-color: red;
+      }
+      h1 {
+        color: black;
+        border: 2px solid white;
+        margin-top: 50px;
+      }
+      button {
+        height: 30px;
+        width: 70px;
+        font-style: italic;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <h1>POST CONFESSION!!!</h1>
+      <form id="postForm">
+        <div>
+          <label for="Roll">Roll No.</label>
+          <input
+            placeholder="Roll Number :"
+            size="27"
+            style="text-align: center"
+            id="Roll"
+          />
+        </div>
+        <div>
+          <label for="Confession">Confession</label>
+          <input
+            placeholder="Confession :"
+            size="25"
+            style="text-align: center"
+            id="Confession"
+          />
+        </div>
+        <div style="text-align: center">
+          <button type="submit" id="Post">Post!!!</button>
+        </div>
+      </form>
+
+      <h1>FETCH CONFESSION!!!</h1>
+      <form id="fetchForm">
+        <div>
+          <label for="Roll1">Roll No.</label>
+          <input
+            placeholder="Roll Number :"
+            size="27"
+            style="text-align: center"
+            id="Roll1"
+          />
+        </div>
+        <div id="FetchConfession"></div>
+        <div style="text-align: center">
+          <button type="submit" id="Fetch">Fetch!</button>
+        </div>
+      </form>
+    </div>
+    <script>
+      document
+        .getElementById("postForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          const rollNo = document.getElementById("Roll").value;
+          const confession = document.getElementById("Confession").value;
+
+          const FormData = {
+            roll_no: rollNo,
+            confession: confession,
+          };
+
+          fetch(`https://tpcconfessions.onrender.com/api/postConfession`, {
+            method: `POST`,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(FormData),
+          })
+            .then(function (response) {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.json();
+            })
+            .then((newUserData) => {
+              console.log("New User Data:", newUserData);
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        });
+
+      document
+        .getElementById("fetchForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          const rollNo = document.getElementById("Roll1").value;
+          fetch(`https://tpcconfessions.onrender.com/api/getConfession?roll_no=`+`${rollNo}`)
+            .then(function (response) {
+              return response.json();
+            })
+            .then(function (data) {
+            const Data=data;
+            console.log(data)
+            document.querySelector(`#FetchConfession`).innerText=`${Data[1].confession}`
+
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        });
+        
+    </script>
+  </body>
+</html>
